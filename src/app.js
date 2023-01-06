@@ -1,23 +1,53 @@
 import server from "./backend/server.js"
 
 let users = [];
+let tweets = [];
 
-server.get("/", (req, res) => {
-    res.send(users)
-})
 
 server.post("/sign-up", (req, res) => {
+
+    const { username, avatar } = req.body;
+
     const user = {
-        nome: req.body.username,
-        avatar: req.body.avatar
+        username: username,
+        avatar: avatar
     }
-    console.log(user);
+
+    // for (let index = 0; index < users.length; index++) {
+    //     if (users[index].username === user.username) {
+    //         console.log('ja existe!')
+    //         return
+    //     }
+    // }
+
     users.push(user);
+    console.log(users);
 
     res.send(users);
 });
 
-server.get("/tweets", (req,res) => {
+server.post("/tweets", (req, res) => {
+    const { username, tweet } = req.body;
 
-    res.send('ok!')
+    const tweetPost = {
+        username: 'jose',
+        tweet: tweet
+    }
+
+    for (let index = 0; index < users.length; index++) {
+        if (users[index].username === tweetPost.username) {
+            tweets.push(tweetPost);
+            console.log(tweets)
+            return
+        }
+    }
+
+    console.log('UNAUTHORIZED!')
+
+    res.send(tweetPost);
+
+});
+
+server.get("/tweets", (req, res) => {
+    res.send(tweets)
 })
