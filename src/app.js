@@ -56,6 +56,35 @@ server.get("/tweets", (req, res) => {
     res.send(newTweets)
 })
 
+server.get("/tweets/:username", (req, res) => {
+    const user = req.params.username;
+
+    userValidation(user);
+
+    const userPosts = [];
+
+    tweets.map((tweet) => {
+        if (tweet.username == user) {
+            let userPost = {
+                'username': user,
+                'avatar': '',
+                'tweet': tweet.tweet
+            }
+            userPosts.push(userPost)
+        }
+
+    })
+
+    for (let i = 0; i < users.length; i++) {
+        for (let j = 0; j < userPosts.length; j++) {
+            if (users[i].username == user) {
+                userPosts[j].avatar = users[i].avatar
+            }
+        }
+    }
+    console.log(userPosts)
+    res.send(userPosts)
+});
 
 
 
@@ -64,24 +93,29 @@ function loginValidator(username, avatar, res) {
         res.sendStatus(400)
     }
 
-    try{
+    try {
         let url = new URL(avatar);
         console.log('valid URL')
-    }catch(err){
+    } catch (err) {
         res.sendStatus(400)
         console.log('invalid URL');
     }
 }
 
-function postValidation(username, tweet, res){
+function postValidation(username, tweet, res) {
+
+    userValidation(username)
+
+    if (username === '' || tweet === '') {
+        res.sendStatus(400)
+    }
+}
+
+function userValidation(username, res) {
     let user = users.find(user => user.username === username);
 
     if (!user) {
         res.send('UNAUTHORIZED')
         return;
-    }
-   
-    if (username === '' || tweet === '') {
-        res.sendStatus(400)
     }
 }
