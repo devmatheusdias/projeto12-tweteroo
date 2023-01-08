@@ -2,52 +2,63 @@ import server from "./backend/server.js"
 
 let users = [];
 let tweets = [];
+let av;
 
 
 server.post("/sign-up", (req, res) => {
 
     const { username, avatar } = req.body;
 
+    av = avatar
+
     const user = {
         username: username,
         avatar: avatar
     }
 
-    // for (let index = 0; index < users.length; index++) {
-    //     if (users[index].username === user.username) {
-    //         console.log('ja existe!')
-    //         return
-    //     }
-    // }
-
     users.push(user);
-    console.log(users);
 
     res.send(users);
 });
 
+
 server.post("/tweets", (req, res) => {
     const { username, tweet } = req.body;
 
-    const tweetPost = {
-        username: 'jose',
-        tweet: tweet
+    let usuario = users.find(usuario => usuario.username === username);
+
+    if (!usuario) {
+        res.send('UNAUTHORIZED')
+        return;
     }
 
-    for (let index = 0; index < users.length; index++) {
-        if (users[index].username === tweetPost.username) {
-            tweets.push(tweetPost);
-            console.log(tweets)
-            return
-        }
-    }
+    tweets.push(req.body)
 
-    console.log('UNAUTHORIZED!')
-
-    res.send(tweetPost);
-
+    res.send(tweets)
 });
 
 server.get("/tweets", (req, res) => {
-    res.send(tweets)
+    
+    const newTweets = [];
+
+    tweets.map((tweet) => {
+        let newTweet = {
+            'username': tweet.username,
+            'avatar': '',
+            'tweet': tweet.tweet
+        };
+        newTweets.push(newTweet)
+    })
+
+    for (let i = 0; i < users.length; i++) {
+        for (let j = 0; j < newTweets.length; j++) {
+            if(users[i].username == newTweets[j].username){
+                newTweets[j].avatar = users[i].avatar
+            }
+        }
+    }
+
+
+    console.log(newTweets)
+    res.send(newTweets)
 })
