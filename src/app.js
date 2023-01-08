@@ -21,7 +21,7 @@ server.post("/sign-up", (req, res) => {
 });
 
 server.post("/tweets", (req, res) => {
-    const { username, tweet } = req.body;
+    const {username, tweet} = req.body
 
     postValidation(username, tweet, res)
 
@@ -104,7 +104,7 @@ function loginValidator(username, avatar, res) {
 
 function postValidation(username, tweet, res) {
 
-    userValidation(username)
+    userValidation(username, res)
 
     if (username === '' || tweet === '') {
         res.sendStatus(400)
