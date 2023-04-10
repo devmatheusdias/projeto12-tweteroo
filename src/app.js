@@ -1,8 +1,23 @@
-import server from "./backend/server.js"
+import express from 'express';
+import cors from 'cors';
+const server = express();
+
+server.use(cors());
+server.use(express.json());
+
+const PORT = 5000
+
+server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`))
+
+export default server;
 
 let users = [];
 let tweets = [];
 
+
+server.get('/', (req,res) => {
+    res.send("ola!")
+})
 
 server.post("/sign-up", (req, res) => {
 
@@ -85,7 +100,6 @@ server.get("/tweets/:username", (req, res) => {
     console.log(userPosts)
     res.send(userPosts)
 });
-
 
 
 function loginValidator(username, avatar, res) {
